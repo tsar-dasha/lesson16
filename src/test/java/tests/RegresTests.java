@@ -60,7 +60,7 @@ public class RegresTests {
 
         steps.sendPostRequest("/api/register", authData)
                 .statusCode(400)
-                .body("error", is("Note: Only defined users succeed registration"));
+                .body("error", is("Missing email or username"));
     }
 
     @Test
