@@ -15,13 +15,18 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class RegresTests {
 
+    @BeforeAll
+    public static void setUp() {
+        RestAssured.baseURI = "https://reqres.in";
+    }
+
     Steps steps = new Steps();
 
     @Test
     void successfulUpdateTest() {
         String authData = steps.createAuthData("morpheus", "zion resident");
 
-        steps.sendPutRequest("/users/2", authData)
+        steps.sendPutRequest("/api/users/2", authData)
                 .statusCode(200)
                 .body("name", is("morpheus"))
                 .body("job", is("zion resident"))
@@ -32,7 +37,7 @@ public class RegresTests {
     void successfulRegisterTest() {
         String authData = steps.createAuthData("eve.holt@reqres.in", "pistol");
 
-        String token = steps.sendPostRequest("/register", authData)
+        String token = steps.sendPostRequest("/api/register", authData)
                 .statusCode(200)
                 .body("id", is(4))
                 .extract().path("token");
@@ -44,7 +49,7 @@ public class RegresTests {
     void unsuccessfulRegisterMissingPasswordTest() {
         String authData = steps.createAuthDataWithoutPassword("sydney@fife");
 
-        steps.sendPostRequest("/register", authData)
+        steps.sendPostRequest("/api/register", authData)
                 .statusCode(400)
                 .body("error", is("Missing password"));
     }
@@ -53,7 +58,7 @@ public class RegresTests {
     void unsuccessfulRegisterBadRequestTest() {
         String authData = steps.createAuthData("eve.holt@reqres.in3435262", "pistol");
 
-        steps.sendPostRequest("/register", authData)
+        steps.sendPostRequest("/api/register", authData)
                 .statusCode(400)
                 .body("error", is("Note: Only defined users succeed registration"));
     }
@@ -62,7 +67,7 @@ public class RegresTests {
     void unsuccessfulRegisterMissingCredentialsTest() {
         String authData = "{}";
 
-        steps.sendPostRequest("/register", authData)
+        steps.sendPostRequest("/api/register", authData)
                 .statusCode(400)
                 .body("error", is("Missing email or username"));
     }
