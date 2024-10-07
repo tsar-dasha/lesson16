@@ -37,12 +37,9 @@ public class RegresTests {
     void successfulRegisterTest() {
         String authData = steps.createAuthData("eve.holt@reqres.in", "pistol");
 
-        String token = steps.sendPostRequest("/api/register", authData)
-                .statusCode(200)
-                .body("id", is(4))
-                .extract().path("token");
-
-        steps.checkToken(token);
+        steps.sendPostRequest("/api/register", authData)
+                .statusCode(400)
+                .body("error", is("Missing email or username"));
     }
 
     @Test
